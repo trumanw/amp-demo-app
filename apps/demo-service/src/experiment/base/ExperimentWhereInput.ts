@@ -12,9 +12,10 @@ https://docs.amplication.com/how-to/custom-code
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
 import { EnumExperimentGoal } from "./EnumExperimentGoal";
-import { IsEnum, IsOptional } from "class-validator";
+import { IsEnum, IsOptional, ValidateNested } from "class-validator";
 import { StringFilter } from "../../util/StringFilter";
 import { Type } from "class-transformer";
+import { ParameterSpaceListRelationFilter } from "../../parameterSpace/base/ParameterSpaceListRelationFilter";
 
 @InputType()
 class ExperimentWhereInput {
@@ -50,6 +51,18 @@ class ExperimentWhereInput {
     nullable: true,
   })
   name?: StringFilter;
+
+  @ApiProperty({
+    required: false,
+    type: () => ParameterSpaceListRelationFilter,
+  })
+  @ValidateNested()
+  @Type(() => ParameterSpaceListRelationFilter)
+  @IsOptional()
+  @Field(() => ParameterSpaceListRelationFilter, {
+    nullable: true,
+  })
+  parameterSpace?: ParameterSpaceListRelationFilter;
 }
 
 export { ExperimentWhereInput as ExperimentWhereInput };

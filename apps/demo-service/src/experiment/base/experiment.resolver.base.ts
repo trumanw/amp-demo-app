@@ -26,6 +26,9 @@ import { ExperimentCountArgs } from "./ExperimentCountArgs";
 import { ExperimentFindManyArgs } from "./ExperimentFindManyArgs";
 import { ExperimentFindUniqueArgs } from "./ExperimentFindUniqueArgs";
 import { Experiment } from "./Experiment";
+import { ParameterSpaceFindManyArgs } from "../../parameterSpace/base/ParameterSpaceFindManyArgs";
+import { ParameterSpace } from "../../parameterSpace/base/ParameterSpace";
+import { User } from "../../user/base/User";
 import { ExperimentService } from "../experiment.service";
 @common.UseGuards(GqlDefaultAuthGuard, gqlACGuard.GqlACGuard)
 @graphql.Resolver(() => Experiment)
@@ -92,7 +95,13 @@ export class ExperimentResolverBase {
   ): Promise<Experiment> {
     return await this.service.create({
       ...args,
-      data: args.data,
+      data: {
+        ...args.data,
+
+        owner: {
+          connect: args.data.owner,
+        },
+      },
     });
   }
 
@@ -109,7 +118,13 @@ export class ExperimentResolverBase {
     try {
       return await this.service.update({
         ...args,
-        data: args.data,
+        data: {
+          ...args.data,
+
+          owner: {
+            connect: args.data.owner,
+          },
+        },
       });
     } catch (error) {
       if (isRecordNotFoundError(error)) {
@@ -140,5 +155,46 @@ export class ExperimentResolverBase {
       }
       throw error;
     }
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => [ParameterSpace], { name: "parameterSpace" })
+  @nestAccessControl.UseRoles({
+    resource: "ParameterSpace",
+    action: "read",
+    possession: "any",
+  })
+  async resolveFieldParameterSpace(
+    @graphql.Parent() parent: Experiment,
+    @graphql.Args() args: ParameterSpaceFindManyArgs
+  ): Promise<ParameterSpace[]> {
+    const results = await this.service.findParameterSpace(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => User, {
+    nullable: true,
+    name: "owner",
+  })
+  @nestAccessControl.UseRoles({
+    resource: "User",
+    action: "read",
+    possession: "any",
+  })
+  async resolveFieldOwner(
+    @graphql.Parent() parent: Experiment
+  ): Promise<User | null> {
+    const result = await this.service.getOwner(parent.id);
+
+    if (!result) {
+      return null;
+    }
+    return result;
   }
 }

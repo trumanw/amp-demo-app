@@ -13,6 +13,10 @@ import { ExperimentList } from "./experiment/ExperimentList";
 import { ExperimentCreate } from "./experiment/ExperimentCreate";
 import { ExperimentEdit } from "./experiment/ExperimentEdit";
 import { ExperimentShow } from "./experiment/ExperimentShow";
+import { ParameterSpaceList } from "./parameterSpace/ParameterSpaceList";
+import { ParameterSpaceCreate } from "./parameterSpace/ParameterSpaceCreate";
+import { ParameterSpaceEdit } from "./parameterSpace/ParameterSpaceEdit";
+import { ParameterSpaceShow } from "./parameterSpace/ParameterSpaceShow";
 import { jwtAuthProvider } from "./auth-provider/ra-auth-jwt";
 
 const App = (): React.ReactElement => {
@@ -52,6 +56,13 @@ const App = (): React.ReactElement => {
           edit={ExperimentEdit}
           create={ExperimentCreate}
           show={ExperimentShow}
+        />
+        <Resource
+          name="ParameterSpace"
+          list={ParameterSpaceList}
+          edit={ParameterSpaceEdit}
+          create={ParameterSpaceCreate}
+          show={ParameterSpaceShow}
         />
       </Admin>
     </div>

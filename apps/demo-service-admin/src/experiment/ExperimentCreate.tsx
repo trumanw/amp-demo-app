@@ -1,11 +1,18 @@
 import * as React from "react";
+
 import {
   Create,
   SimpleForm,
   CreateProps,
   SelectInput,
   TextInput,
+  ReferenceInput,
+  ReferenceArrayInput,
+  SelectArrayInput,
 } from "react-admin";
+
+import { UserTitle } from "../user/UserTitle";
+import { ParameterSpaceTitle } from "../parameterSpace/ParameterSpaceTitle";
 
 export const ExperimentCreate = (props: CreateProps): React.ReactElement => {
   return (
@@ -19,6 +26,17 @@ export const ExperimentCreate = (props: CreateProps): React.ReactElement => {
           optionValue="value"
         />
         <TextInput label="Name" source="name" />
+        <ReferenceInput source="owner.id" reference="User" label="Owner">
+          <SelectInput optionText={UserTitle} />
+        </ReferenceInput>
+        <ReferenceArrayInput
+          source="parameterSpace"
+          reference="ParameterSpace"
+          parse={(value: any) => value && value.map((v: any) => ({ id: v }))}
+          format={(value: any) => value && value.map((v: any) => v.id)}
+        >
+          <SelectArrayInput optionText={ParameterSpaceTitle} />
+        </ReferenceArrayInput>
       </SimpleForm>
     </Create>
   );

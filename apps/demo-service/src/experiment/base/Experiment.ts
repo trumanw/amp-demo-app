@@ -11,9 +11,17 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { ObjectType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDate, IsEnum, IsString } from "class-validator";
+import {
+  IsDate,
+  IsEnum,
+  IsString,
+  ValidateNested,
+  IsOptional,
+} from "class-validator";
 import { Type } from "class-transformer";
 import { EnumExperimentGoal } from "./EnumExperimentGoal";
+import { User } from "../../user/base/User";
+import { ParameterSpace } from "../../parameterSpace/base/ParameterSpace";
 
 @ObjectType()
 class Experiment {
@@ -50,6 +58,23 @@ class Experiment {
   @IsString()
   @Field(() => String)
   name!: string;
+
+  @ApiProperty({
+    required: true,
+    type: () => User,
+  })
+  @ValidateNested()
+  @Type(() => User)
+  owner?: User;
+
+  @ApiProperty({
+    required: false,
+    type: () => [ParameterSpace],
+  })
+  @ValidateNested()
+  @Type(() => ParameterSpace)
+  @IsOptional()
+  parameterSpace?: Array<ParameterSpace>;
 
   @ApiProperty({
     required: true,

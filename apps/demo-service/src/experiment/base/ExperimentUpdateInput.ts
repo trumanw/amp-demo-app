@@ -12,7 +12,10 @@ https://docs.amplication.com/how-to/custom-code
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
 import { EnumExperimentGoal } from "./EnumExperimentGoal";
-import { IsEnum, IsOptional, IsString } from "class-validator";
+import { IsEnum, IsOptional, IsString, ValidateNested } from "class-validator";
+import { UserWhereUniqueInput } from "../../user/base/UserWhereUniqueInput";
+import { Type } from "class-transformer";
+import { ParameterSpaceUpdateManyWithoutExperimentsInput } from "./ParameterSpaceUpdateManyWithoutExperimentsInput";
 
 @InputType()
 class ExperimentUpdateInput {
@@ -37,6 +40,30 @@ class ExperimentUpdateInput {
     nullable: true,
   })
   name?: string;
+
+  @ApiProperty({
+    required: false,
+    type: () => UserWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => UserWhereUniqueInput)
+  @IsOptional()
+  @Field(() => UserWhereUniqueInput, {
+    nullable: true,
+  })
+  owner?: UserWhereUniqueInput;
+
+  @ApiProperty({
+    required: false,
+    type: () => ParameterSpaceUpdateManyWithoutExperimentsInput,
+  })
+  @ValidateNested()
+  @Type(() => ParameterSpaceUpdateManyWithoutExperimentsInput)
+  @IsOptional()
+  @Field(() => ParameterSpaceUpdateManyWithoutExperimentsInput, {
+    nullable: true,
+  })
+  parameterSpace?: ParameterSpaceUpdateManyWithoutExperimentsInput;
 }
 
 export { ExperimentUpdateInput as ExperimentUpdateInput };

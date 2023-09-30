@@ -4,17 +4,27 @@ import {
   Create,
   SimpleForm,
   CreateProps,
+  ReferenceInput,
+  SelectInput,
   TextInput,
   PasswordInput,
   SelectArrayInput,
 } from "react-admin";
 
+import { ExperimentTitle } from "../experiment/ExperimentTitle";
 import { ROLES_OPTIONS } from "../user/RolesOptions";
 
 export const UserCreate = (props: CreateProps): React.ReactElement => {
   return (
     <Create {...props}>
       <SimpleForm>
+        <ReferenceInput
+          source="experiments.id"
+          reference="Experiment"
+          label="Experiments"
+        >
+          <SelectInput optionText={ExperimentTitle} />
+        </ReferenceInput>
         <TextInput label="First Name" source="firstName" />
         <TextInput label="Last Name" source="lastName" />
         <PasswordInput label="Password" source="password" />
