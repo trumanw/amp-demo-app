@@ -1,0 +1,59 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  createdAt   DateTime    @default(now())
+  experiments Experiment?
+  firstName   String?
+  id          String      @id @default(cuid())
+  lastName    String?
+  password    String
+  roles       Json
+  updatedAt   DateTime    @updatedAt
+  username    String      @unique
+}
+
+model Experiment {
+  createdAt      DateTime           @default(now())
+  goal           EnumExperimentGoal
+  id             String             @id @default(cuid())
+  name           String
+  owner          User               @relation(fields: [User], references: [id])
+  User           String             @unique
+  parameterSpace ParameterSpace[]
+  updatedAt      DateTime           @updatedAt
+}
+
+model ParameterSpace {
+  bounds        Json?
+  createdAt     DateTime                        @default(now())
+  experiments   Experiment[]
+  id            String                          @id @default(cuid())
+  name          String?
+  parameterType EnumParameterSpaceParameterType
+  updatedAt     DateTime                        @updatedAt
+  valueType     EnumParameterSpaceValueType?
+}
+
+enum EnumExperimentGoal {
+  MOO
+}
+
+enum EnumParameterSpaceParameterType {
+  Range
+  Choice
+  Fixed
+}
+
+enum EnumParameterSpaceValueType {
+  BOOL
+  FLOAT
+  INT
+  STRING
+}
