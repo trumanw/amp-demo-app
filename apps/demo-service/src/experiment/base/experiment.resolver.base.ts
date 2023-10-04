@@ -26,9 +26,9 @@ import { ExperimentCountArgs } from "./ExperimentCountArgs";
 import { ExperimentFindManyArgs } from "./ExperimentFindManyArgs";
 import { ExperimentFindUniqueArgs } from "./ExperimentFindUniqueArgs";
 import { Experiment } from "./Experiment";
-import { ParameterSpaceFindManyArgs } from "../../parameterSpace/base/ParameterSpaceFindManyArgs";
-import { ParameterSpace } from "../../parameterSpace/base/ParameterSpace";
+import { OptimizationConfig } from "../../optimizationConfig/base/OptimizationConfig";
 import { User } from "../../user/base/User";
+import { SearchSpace } from "../../searchSpace/base/SearchSpace";
 import { ExperimentService } from "../experiment.service";
 @common.UseGuards(GqlDefaultAuthGuard, gqlACGuard.GqlACGuard)
 @graphql.Resolver(() => Experiment)
@@ -98,9 +98,21 @@ export class ExperimentResolverBase {
       data: {
         ...args.data,
 
+        optimizationConfig: args.data.optimizationConfig
+          ? {
+              connect: args.data.optimizationConfig,
+            }
+          : undefined,
+
         owner: {
           connect: args.data.owner,
         },
+
+        searchSpace: args.data.searchSpace
+          ? {
+              connect: args.data.searchSpace,
+            }
+          : undefined,
       },
     });
   }
@@ -121,9 +133,21 @@ export class ExperimentResolverBase {
         data: {
           ...args.data,
 
+          optimizationConfig: args.data.optimizationConfig
+            ? {
+                connect: args.data.optimizationConfig,
+              }
+            : undefined,
+
           owner: {
             connect: args.data.owner,
           },
+
+          searchSpace: args.data.searchSpace
+            ? {
+                connect: args.data.searchSpace,
+              }
+            : undefined,
         },
       });
     } catch (error) {
@@ -158,23 +182,24 @@ export class ExperimentResolverBase {
   }
 
   @common.UseInterceptors(AclFilterResponseInterceptor)
-  @graphql.ResolveField(() => [ParameterSpace], { name: "parameterSpace" })
+  @graphql.ResolveField(() => OptimizationConfig, {
+    nullable: true,
+    name: "optimizationConfig",
+  })
   @nestAccessControl.UseRoles({
-    resource: "ParameterSpace",
+    resource: "OptimizationConfig",
     action: "read",
     possession: "any",
   })
-  async resolveFieldParameterSpace(
-    @graphql.Parent() parent: Experiment,
-    @graphql.Args() args: ParameterSpaceFindManyArgs
-  ): Promise<ParameterSpace[]> {
-    const results = await this.service.findParameterSpace(parent.id, args);
+  async resolveFieldOptimizationConfig(
+    @graphql.Parent() parent: Experiment
+  ): Promise<OptimizationConfig | null> {
+    const result = await this.service.getOptimizationConfig(parent.id);
 
-    if (!results) {
-      return [];
+    if (!result) {
+      return null;
     }
-
-    return results;
+    return result;
   }
 
   @common.UseInterceptors(AclFilterResponseInterceptor)
@@ -191,6 +216,27 @@ export class ExperimentResolverBase {
     @graphql.Parent() parent: Experiment
   ): Promise<User | null> {
     const result = await this.service.getOwner(parent.id);
+
+    if (!result) {
+      return null;
+    }
+    return result;
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => SearchSpace, {
+    nullable: true,
+    name: "searchSpace",
+  })
+  @nestAccessControl.UseRoles({
+    resource: "SearchSpace",
+    action: "read",
+    possession: "any",
+  })
+  async resolveFieldSearchSpace(
+    @graphql.Parent() parent: Experiment
+  ): Promise<SearchSpace | null> {
+    const result = await this.service.getSearchSpace(parent.id);
 
     if (!result) {
       return null;

@@ -1,5 +1,4 @@
 import * as React from "react";
-
 import {
   Create,
   SimpleForm,
@@ -7,12 +6,10 @@ import {
   SelectInput,
   TextInput,
   ReferenceInput,
-  ReferenceArrayInput,
-  SelectArrayInput,
 } from "react-admin";
-
+import { OptimizationConfigTitle } from "../optimizationConfig/OptimizationConfigTitle";
 import { UserTitle } from "../user/UserTitle";
-import { ParameterSpaceTitle } from "../parameterSpace/ParameterSpaceTitle";
+import { SearchSpaceTitle } from "../searchSpace/SearchSpaceTitle";
 
 export const ExperimentCreate = (props: CreateProps): React.ReactElement => {
   return (
@@ -26,17 +23,23 @@ export const ExperimentCreate = (props: CreateProps): React.ReactElement => {
           optionValue="value"
         />
         <TextInput label="Name" source="name" />
+        <ReferenceInput
+          source="optimizationConfig.id"
+          reference="OptimizationConfig"
+          label="Optimization Config"
+        >
+          <SelectInput optionText={OptimizationConfigTitle} />
+        </ReferenceInput>
         <ReferenceInput source="owner.id" reference="User" label="Owner">
           <SelectInput optionText={UserTitle} />
         </ReferenceInput>
-        <ReferenceArrayInput
-          source="parameterSpace"
-          reference="ParameterSpace"
-          parse={(value: any) => value && value.map((v: any) => ({ id: v }))}
-          format={(value: any) => value && value.map((v: any) => v.id)}
+        <ReferenceInput
+          source="searchSpace.id"
+          reference="SearchSpace"
+          label="Search Space"
         >
-          <SelectArrayInput optionText={ParameterSpaceTitle} />
-        </ReferenceArrayInput>
+          <SelectInput optionText={SearchSpaceTitle} />
+        </ReferenceInput>
       </SimpleForm>
     </Create>
   );

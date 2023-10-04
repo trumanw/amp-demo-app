@@ -3,7 +3,11 @@ import { APP_INTERCEPTOR } from "@nestjs/core";
 import { MorganInterceptor, MorganModule } from "nest-morgan";
 import { UserModule } from "./user/user.module";
 import { ExperimentModule } from "./experiment/experiment.module";
-import { ParameterSpaceModule } from "./parameterSpace/parameterSpace.module";
+import { SearchSpaceModule } from "./searchSpace/searchSpace.module";
+import { ParameterModule } from "./parameter/parameter.module";
+import { ParameterConstraintModule } from "./parameterConstraint/parameterConstraint.module";
+import { OptimizationConfigModule } from "./optimizationConfig/optimizationConfig.module";
+import { ObjectiveModule } from "./objective/objective.module";
 import { HealthModule } from "./health/health.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { SecretsManagerModule } from "./providers/secrets/secretsManager.module";
@@ -22,7 +26,11 @@ import { AuthModule } from "./auth/auth.module";
     AuthModule,
     UserModule,
     ExperimentModule,
-    ParameterSpaceModule,
+    SearchSpaceModule,
+    ParameterModule,
+    ParameterConstraintModule,
+    OptimizationConfigModule,
+    ObjectiveModule,
     HealthModule,
     PrismaModule,
     SecretsManagerModule,

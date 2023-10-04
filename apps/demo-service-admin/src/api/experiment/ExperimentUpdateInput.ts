@@ -1,9 +1,11 @@
+import { OptimizationConfigWhereUniqueInput } from "../optimizationConfig/OptimizationConfigWhereUniqueInput";
 import { UserWhereUniqueInput } from "../user/UserWhereUniqueInput";
-import { ParameterSpaceUpdateManyWithoutExperimentsInput } from "./ParameterSpaceUpdateManyWithoutExperimentsInput";
+import { SearchSpaceWhereUniqueInput } from "../searchSpace/SearchSpaceWhereUniqueInput";
 
 export type ExperimentUpdateInput = {
   goal?: "MOO";
   name?: string;
+  optimizationConfig?: OptimizationConfigWhereUniqueInput | null;
   owner?: UserWhereUniqueInput;
-  parameterSpace?: ParameterSpaceUpdateManyWithoutExperimentsInput;
+  searchSpace?: SearchSpaceWhereUniqueInput | null;
 };

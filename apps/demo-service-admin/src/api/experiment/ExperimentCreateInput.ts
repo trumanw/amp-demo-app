@@ -1,9 +1,11 @@
+import { OptimizationConfigWhereUniqueInput } from "../optimizationConfig/OptimizationConfigWhereUniqueInput";
 import { UserWhereUniqueInput } from "../user/UserWhereUniqueInput";
-import { ParameterSpaceCreateNestedManyWithoutExperimentsInput } from "./ParameterSpaceCreateNestedManyWithoutExperimentsInput";
+import { SearchSpaceWhereUniqueInput } from "../searchSpace/SearchSpaceWhereUniqueInput";
 
 export type ExperimentCreateInput = {
   goal: "MOO";
   name: string;
+  optimizationConfig?: OptimizationConfigWhereUniqueInput | null;
   owner: UserWhereUniqueInput;
-  parameterSpace?: ParameterSpaceCreateNestedManyWithoutExperimentsInput;
+  searchSpace?: SearchSpaceWhereUniqueInput | null;
 };

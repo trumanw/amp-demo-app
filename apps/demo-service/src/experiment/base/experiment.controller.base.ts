@@ -27,9 +27,6 @@ import { ExperimentWhereUniqueInput } from "./ExperimentWhereUniqueInput";
 import { ExperimentFindManyArgs } from "./ExperimentFindManyArgs";
 import { ExperimentUpdateInput } from "./ExperimentUpdateInput";
 import { Experiment } from "./Experiment";
-import { ParameterSpaceFindManyArgs } from "../../parameterSpace/base/ParameterSpaceFindManyArgs";
-import { ParameterSpace } from "../../parameterSpace/base/ParameterSpace";
-import { ParameterSpaceWhereUniqueInput } from "../../parameterSpace/base/ParameterSpaceWhereUniqueInput";
 
 @swagger.ApiBearerAuth()
 @common.UseGuards(defaultAuthGuard.DefaultAuthGuard, nestAccessControl.ACGuard)
@@ -56,9 +53,21 @@ export class ExperimentControllerBase {
       data: {
         ...data,
 
+        optimizationConfig: data.optimizationConfig
+          ? {
+              connect: data.optimizationConfig,
+            }
+          : undefined,
+
         owner: {
           connect: data.owner,
         },
+
+        searchSpace: data.searchSpace
+          ? {
+              connect: data.searchSpace,
+            }
+          : undefined,
       },
       select: {
         createdAt: true,
@@ -66,7 +75,19 @@ export class ExperimentControllerBase {
         id: true,
         name: true,
 
+        optimizationConfig: {
+          select: {
+            id: true,
+          },
+        },
+
         owner: {
+          select: {
+            id: true,
+          },
+        },
+
+        searchSpace: {
           select: {
             id: true,
           },
@@ -99,7 +120,19 @@ export class ExperimentControllerBase {
         id: true,
         name: true,
 
+        optimizationConfig: {
+          select: {
+            id: true,
+          },
+        },
+
         owner: {
+          select: {
+            id: true,
+          },
+        },
+
+        searchSpace: {
           select: {
             id: true,
           },
@@ -133,7 +166,19 @@ export class ExperimentControllerBase {
         id: true,
         name: true,
 
+        optimizationConfig: {
+          select: {
+            id: true,
+          },
+        },
+
         owner: {
+          select: {
+            id: true,
+          },
+        },
+
+        searchSpace: {
           select: {
             id: true,
           },
@@ -172,9 +217,21 @@ export class ExperimentControllerBase {
         data: {
           ...data,
 
+          optimizationConfig: data.optimizationConfig
+            ? {
+                connect: data.optimizationConfig,
+              }
+            : undefined,
+
           owner: {
             connect: data.owner,
           },
+
+          searchSpace: data.searchSpace
+            ? {
+                connect: data.searchSpace,
+              }
+            : undefined,
         },
         select: {
           createdAt: true,
@@ -182,7 +239,19 @@ export class ExperimentControllerBase {
           id: true,
           name: true,
 
+          optimizationConfig: {
+            select: {
+              id: true,
+            },
+          },
+
           owner: {
+            select: {
+              id: true,
+            },
+          },
+
+          searchSpace: {
             select: {
               id: true,
             },
@@ -224,7 +293,19 @@ export class ExperimentControllerBase {
           id: true,
           name: true,
 
+          optimizationConfig: {
+            select: {
+              id: true,
+            },
+          },
+
           owner: {
+            select: {
+              id: true,
+            },
+          },
+
+          searchSpace: {
             select: {
               id: true,
             },
@@ -241,104 +322,5 @@ export class ExperimentControllerBase {
       }
       throw error;
     }
-  }
-
-  @common.UseInterceptors(AclFilterResponseInterceptor)
-  @common.Get("/:id/parameterSpace")
-  @ApiNestedQuery(ParameterSpaceFindManyArgs)
-  @nestAccessControl.UseRoles({
-    resource: "ParameterSpace",
-    action: "read",
-    possession: "any",
-  })
-  async findManyParameterSpace(
-    @common.Req() request: Request,
-    @common.Param() params: ExperimentWhereUniqueInput
-  ): Promise<ParameterSpace[]> {
-    const query = plainToClass(ParameterSpaceFindManyArgs, request.query);
-    const results = await this.service.findParameterSpace(params.id, {
-      ...query,
-      select: {
-        bounds: true,
-        createdAt: true,
-        id: true,
-        name: true,
-        parameterType: true,
-        updatedAt: true,
-        valueType: true,
-      },
-    });
-    if (results === null) {
-      throw new errors.NotFoundException(
-        `No resource was found for ${JSON.stringify(params)}`
-      );
-    }
-    return results;
-  }
-
-  @common.Post("/:id/parameterSpace")
-  @nestAccessControl.UseRoles({
-    resource: "Experiment",
-    action: "update",
-    possession: "any",
-  })
-  async connectParameterSpace(
-    @common.Param() params: ExperimentWhereUniqueInput,
-    @common.Body() body: ParameterSpaceWhereUniqueInput[]
-  ): Promise<void> {
-    const data = {
-      parameterSpace: {
-        connect: body,
-      },
-    };
-    await this.service.update({
-      where: params,
-      data,
-      select: { id: true },
-    });
-  }
-
-  @common.Patch("/:id/parameterSpace")
-  @nestAccessControl.UseRoles({
-    resource: "Experiment",
-    action: "update",
-    possession: "any",
-  })
-  async updateParameterSpace(
-    @common.Param() params: ExperimentWhereUniqueInput,
-    @common.Body() body: ParameterSpaceWhereUniqueInput[]
-  ): Promise<void> {
-    const data = {
-      parameterSpace: {
-        set: body,
-      },
-    };
-    await this.service.update({
-      where: params,
-      data,
-      select: { id: true },
-    });
-  }
-
-  @common.Delete("/:id/parameterSpace")
-  @nestAccessControl.UseRoles({
-    resource: "Experiment",
-    action: "update",
-    possession: "any",
-  })
-  async disconnectParameterSpace(
-    @common.Param() params: ExperimentWhereUniqueInput,
-    @common.Body() body: ParameterSpaceWhereUniqueInput[]
-  ): Promise<void> {
-    const data = {
-      parameterSpace: {
-        disconnect: body,
-      },
-    };
-    await this.service.update({
-      where: params,
-      data,
-      select: { id: true },
-    });
   }
 }

@@ -1,9 +1,11 @@
 import { StringFilter } from "../../util/StringFilter";
-import { ParameterSpaceListRelationFilter } from "../parameterSpace/ParameterSpaceListRelationFilter";
+import { OptimizationConfigWhereUniqueInput } from "../optimizationConfig/OptimizationConfigWhereUniqueInput";
+import { SearchSpaceWhereUniqueInput } from "../searchSpace/SearchSpaceWhereUniqueInput";
 
 export type ExperimentWhereInput = {
   goal?: "MOO";
   id?: StringFilter;
   name?: StringFilter;
-  parameterSpace?: ParameterSpaceListRelationFilter;
+  optimizationConfig?: OptimizationConfigWhereUniqueInput;
+  searchSpace?: SearchSpaceWhereUniqueInput;
 };

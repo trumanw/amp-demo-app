@@ -20,8 +20,9 @@ import {
 } from "class-validator";
 import { Type } from "class-transformer";
 import { EnumExperimentGoal } from "./EnumExperimentGoal";
+import { OptimizationConfig } from "../../optimizationConfig/base/OptimizationConfig";
 import { User } from "../../user/base/User";
-import { ParameterSpace } from "../../parameterSpace/base/ParameterSpace";
+import { SearchSpace } from "../../searchSpace/base/SearchSpace";
 
 @ObjectType()
 class Experiment {
@@ -60,6 +61,15 @@ class Experiment {
   name!: string;
 
   @ApiProperty({
+    required: false,
+    type: () => OptimizationConfig,
+  })
+  @ValidateNested()
+  @Type(() => OptimizationConfig)
+  @IsOptional()
+  optimizationConfig?: OptimizationConfig | null;
+
+  @ApiProperty({
     required: true,
     type: () => User,
   })
@@ -69,12 +79,12 @@ class Experiment {
 
   @ApiProperty({
     required: false,
-    type: () => [ParameterSpace],
+    type: () => SearchSpace,
   })
   @ValidateNested()
-  @Type(() => ParameterSpace)
+  @Type(() => SearchSpace)
   @IsOptional()
-  parameterSpace?: Array<ParameterSpace>;
+  searchSpace?: SearchSpace | null;
 
   @ApiProperty({
     required: true,

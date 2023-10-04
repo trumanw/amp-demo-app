@@ -10,7 +10,13 @@ https://docs.amplication.com/how-to/custom-code
 ------------------------------------------------------------------------------
   */
 import { PrismaService } from "../../prisma/prisma.service";
-import { Prisma, Experiment, ParameterSpace, User } from "@prisma/client";
+import {
+  Prisma,
+  Experiment,
+  OptimizationConfig,
+  User,
+  SearchSpace,
+} from "@prisma/client";
 
 export class ExperimentServiceBase {
   constructor(protected readonly prisma: PrismaService) {}
@@ -47,15 +53,14 @@ export class ExperimentServiceBase {
     return this.prisma.experiment.delete(args);
   }
 
-  async findParameterSpace(
-    parentId: string,
-    args: Prisma.ParameterSpaceFindManyArgs
-  ): Promise<ParameterSpace[]> {
+  async getOptimizationConfig(
+    parentId: string
+  ): Promise<OptimizationConfig | null> {
     return this.prisma.experiment
-      .findUniqueOrThrow({
+      .findUnique({
         where: { id: parentId },
       })
-      .parameterSpace(args);
+      .optimizationConfig();
   }
 
   async getOwner(parentId: string): Promise<User | null> {
@@ -64,5 +69,13 @@ export class ExperimentServiceBase {
         where: { id: parentId },
       })
       .owner();
+  }
+
+  async getSearchSpace(parentId: string): Promise<SearchSpace | null> {
+    return this.prisma.experiment
+      .findUnique({
+        where: { id: parentId },
+      })
+      .searchSpace();
   }
 }

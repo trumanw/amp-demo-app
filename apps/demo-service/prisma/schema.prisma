@@ -20,40 +20,67 @@ model User {
 }
 
 model Experiment {
-  createdAt      DateTime           @default(now())
-  goal           EnumExperimentGoal
-  id             String             @id @default(cuid())
-  name           String
-  owner          User               @relation(fields: [User], references: [id])
-  User           String             @unique
-  parameterSpace ParameterSpace[]
-  updatedAt      DateTime           @updatedAt
+  createdAt            DateTime            @default(now())
+  goal                 EnumExperimentGoal
+  id                   String              @id @default(cuid())
+  name                 String
+  optimizationConfig   OptimizationConfig? @relation(fields: [optimizationConfigId], references: [id])
+  optimizationConfigId String?
+  owner                User                @relation(fields: [User], references: [id])
+  User                 String              @unique
+  searchSpace          SearchSpace?        @relation(fields: [searchSpaceId], references: [id])
+  searchSpaceId        String?
+  updatedAt            DateTime            @updatedAt
 }
 
-model ParameterSpace {
-  bounds        Json?
-  createdAt     DateTime                        @default(now())
-  experiments   Experiment[]
-  id            String                          @id @default(cuid())
-  name          String?
-  parameterType EnumParameterSpaceParameterType
-  updatedAt     DateTime                        @updatedAt
-  valueType     EnumParameterSpaceValueType?
+model SearchSpace {
+  createdAt            DateTime              @default(now())
+  experiments          Experiment[]
+  id                   String                @id @default(cuid())
+  parameterConstraints ParameterConstraint[]
+  parameters           Parameter[]
+  updatedAt            DateTime              @updatedAt
+}
+
+model Parameter {
+  createdAt      DateTime     @default(now())
+  id             String       @id @default(cuid())
+  parameterBody  String?
+  parameterClass String?
+  parameterName  String?
+  searchSpace    SearchSpace? @relation(fields: [searchSpaceId], references: [id])
+  searchSpaceId  String?
+  updatedAt      DateTime     @updatedAt
+}
+
+model ParameterConstraint {
+  createdAt     DateTime     @default(now())
+  id            String       @id @default(cuid())
+  searchSpace   SearchSpace? @relation(fields: [searchSpaceId], references: [id])
+  searchSpaceId String?
+  updatedAt     DateTime     @updatedAt
+}
+
+model OptimizationConfig {
+  createdAt          DateTime     @default(now())
+  experiments        Experiment[]
+  id                 String       @id @default(cuid())
+  objectives         Objective[]
+  outcomeConstraints String?
+  updatedAt          DateTime     @updatedAt
+}
+
+model Objective {
+  createdAt            DateTime            @default(now())
+  id                   String              @id @default(cuid())
+  objectiveBody        String?
+  objectiveClass       String?
+  objectiveName        String?
+  optimizationConfig   OptimizationConfig? @relation(fields: [optimizationConfigId], references: [id])
+  optimizationConfigId String?
+  updatedAt            DateTime            @updatedAt
 }
 
 enum EnumExperimentGoal {
   MOO
-}
-
-enum EnumParameterSpaceParameterType {
-  Range
-  Choice
-  Fixed
-}
-
-enum EnumParameterSpaceValueType {
-  BOOL
-  FLOAT
-  INT
-  STRING
 }

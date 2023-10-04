@@ -1,12 +1,14 @@
+import { OptimizationConfig } from "../optimizationConfig/OptimizationConfig";
 import { User } from "../user/User";
-import { ParameterSpace } from "../parameterSpace/ParameterSpace";
+import { SearchSpace } from "../searchSpace/SearchSpace";
 
 export type Experiment = {
   createdAt: Date;
   goal?: "MOO";
   id: string;
   name: string;
+  optimizationConfig?: OptimizationConfig | null;
   owner?: User;
-  parameterSpace?: Array<ParameterSpace>;
+  searchSpace?: SearchSpace | null;
   updatedAt: Date;
 };
