@@ -16,37 +16,30 @@ enum EnumExperimentGoal {
   Moo
 }
 
-enum EnumParameterSpaceParameterType {
-  Choice
-  Fixed
-  Range
-}
-
-enum EnumParameterSpaceValueType {
-  Bool
-  Float
-  Int
-  String
-}
-
 type Experiment {
   createdAt: DateTime!
   goal: EnumExperimentGoal
   id: String!
   name: String!
+  optimizationConfig: OptimizationConfig
   owner: User
-  parameterSpace(orderBy: [ParameterSpaceOrderByInput!], skip: Float, take: Float, where: ParameterSpaceWhereInput): [ParameterSpace!]!
+  searchSpace: SearchSpace
   updatedAt: DateTime!
 }
 
 input ExperimentCreateInput {
   goal: EnumExperimentGoal!
   name: String!
+  optimizationConfig: OptimizationConfigWhereUniqueInput
   owner: UserWhereUniqueInput!
-  parameterSpace: ParameterSpaceCreateNestedManyWithoutExperimentsInput
+  searchSpace: SearchSpaceWhereUniqueInput
 }
 
-input ExperimentCreateNestedManyWithoutParameterSpacesInput {
+input ExperimentCreateNestedManyWithoutOptimizationConfigsInput {
+  connect: [ExperimentWhereUniqueInput!]
+}
+
+input ExperimentCreateNestedManyWithoutSearchSpacesInput {
   connect: [ExperimentWhereUniqueInput!]
 }
 
@@ -62,17 +55,26 @@ input ExperimentOrderByInput {
   goal: SortOrder
   id: SortOrder
   name: SortOrder
+  optimizationConfigId: SortOrder
+  searchSpaceId: SortOrder
   updatedAt: SortOrder
 }
 
 input ExperimentUpdateInput {
   goal: EnumExperimentGoal
   name: String
+  optimizationConfig: OptimizationConfigWhereUniqueInput
   owner: UserWhereUniqueInput
-  parameterSpace: ParameterSpaceUpdateManyWithoutExperimentsInput
+  searchSpace: SearchSpaceWhereUniqueInput
 }
 
-input ExperimentUpdateManyWithoutParameterSpacesInput {
+input ExperimentUpdateManyWithoutOptimizationConfigsInput {
+  connect: [ExperimentWhereUniqueInput!]
+  disconnect: [ExperimentWhereUniqueInput!]
+  set: [ExperimentWhereUniqueInput!]
+}
+
+input ExperimentUpdateManyWithoutSearchSpacesInput {
   connect: [ExperimentWhereUniqueInput!]
   disconnect: [ExperimentWhereUniqueInput!]
   set: [ExperimentWhereUniqueInput!]
@@ -82,7 +84,8 @@ input ExperimentWhereInput {
   goal: EnumExperimentGoal
   id: StringFilter
   name: StringFilter
-  parameterSpace: ParameterSpaceListRelationFilter
+  optimizationConfig: OptimizationConfigWhereUniqueInput
+  searchSpace: SearchSpaceWhereUniqueInput
 }
 
 input ExperimentWhereUniqueInput {
@@ -94,107 +97,265 @@ The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://
 """
 scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
 
-"""
-The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
-"""
-scalar JSONObject @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
-
-input JsonFilter {
-  equals: JSONObject
-  not: JSONObject
-}
-
 type MetaQueryPayload {
   count: Float!
 }
 
 type Mutation {
   createExperiment(data: ExperimentCreateInput!): Experiment!
-  createParameterSpace(data: ParameterSpaceCreateInput!): ParameterSpace!
+  createObjective(data: ObjectiveCreateInput!): Objective!
+  createOptimizationConfig(data: OptimizationConfigCreateInput!): OptimizationConfig!
+  createParameter(data: ParameterCreateInput!): Parameter!
+  createParameterConstraint(data: ParameterConstraintCreateInput!): ParameterConstraint!
+  createSearchSpace(data: SearchSpaceCreateInput!): SearchSpace!
   createUser(data: UserCreateInput!): User!
   deleteExperiment(where: ExperimentWhereUniqueInput!): Experiment!
-  deleteParameterSpace(where: ParameterSpaceWhereUniqueInput!): ParameterSpace!
+  deleteObjective(where: ObjectiveWhereUniqueInput!): Objective!
+  deleteOptimizationConfig(where: OptimizationConfigWhereUniqueInput!): OptimizationConfig!
+  deleteParameter(where: ParameterWhereUniqueInput!): Parameter!
+  deleteParameterConstraint(where: ParameterConstraintWhereUniqueInput!): ParameterConstraint!
+  deleteSearchSpace(where: SearchSpaceWhereUniqueInput!): SearchSpace!
   deleteUser(where: UserWhereUniqueInput!): User!
   login(credentials: Credentials!): UserInfo!
   updateExperiment(data: ExperimentUpdateInput!, where: ExperimentWhereUniqueInput!): Experiment!
-  updateParameterSpace(data: ParameterSpaceUpdateInput!, where: ParameterSpaceWhereUniqueInput!): ParameterSpace!
+  updateObjective(data: ObjectiveUpdateInput!, where: ObjectiveWhereUniqueInput!): Objective!
+  updateOptimizationConfig(data: OptimizationConfigUpdateInput!, where: OptimizationConfigWhereUniqueInput!): OptimizationConfig!
+  updateParameter(data: ParameterUpdateInput!, where: ParameterWhereUniqueInput!): Parameter!
+  updateParameterConstraint(data: ParameterConstraintUpdateInput!, where: ParameterConstraintWhereUniqueInput!): ParameterConstraint!
+  updateSearchSpace(data: SearchSpaceUpdateInput!, where: SearchSpaceWhereUniqueInput!): SearchSpace!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User!
 }
 
-type ParameterSpace {
-  bounds: JSON
+type Objective {
+  createdAt: DateTime!
+  id: String!
+  objectiveBody: String
+  objectiveClass: String
+  objectiveName: String
+  optimizationConfig: OptimizationConfig
+  updatedAt: DateTime!
+}
+
+input ObjectiveCreateInput {
+  objectiveBody: String
+  objectiveClass: String
+  objectiveName: String
+  optimizationConfig: OptimizationConfigWhereUniqueInput
+}
+
+input ObjectiveCreateNestedManyWithoutOptimizationConfigsInput {
+  connect: [ObjectiveWhereUniqueInput!]
+}
+
+input ObjectiveListRelationFilter {
+  every: ObjectiveWhereInput
+  none: ObjectiveWhereInput
+  some: ObjectiveWhereInput
+}
+
+input ObjectiveOrderByInput {
+  createdAt: SortOrder
+  id: SortOrder
+  objectiveBody: SortOrder
+  objectiveClass: SortOrder
+  objectiveName: SortOrder
+  optimizationConfigId: SortOrder
+  updatedAt: SortOrder
+}
+
+input ObjectiveUpdateInput {
+  objectiveBody: String
+  objectiveClass: String
+  objectiveName: String
+  optimizationConfig: OptimizationConfigWhereUniqueInput
+}
+
+input ObjectiveUpdateManyWithoutOptimizationConfigsInput {
+  connect: [ObjectiveWhereUniqueInput!]
+  disconnect: [ObjectiveWhereUniqueInput!]
+  set: [ObjectiveWhereUniqueInput!]
+}
+
+input ObjectiveWhereInput {
+  id: StringFilter
+  objectiveBody: StringNullableFilter
+  objectiveClass: StringNullableFilter
+  objectiveName: StringNullableFilter
+  optimizationConfig: OptimizationConfigWhereUniqueInput
+}
+
+input ObjectiveWhereUniqueInput {
+  id: String!
+}
+
+type OptimizationConfig {
   createdAt: DateTime!
   experiments(orderBy: [ExperimentOrderByInput!], skip: Float, take: Float, where: ExperimentWhereInput): [Experiment!]!
   id: String!
-  name: String
-  parameterType: EnumParameterSpaceParameterType
+  objectives(orderBy: [ObjectiveOrderByInput!], skip: Float, take: Float, where: ObjectiveWhereInput): [Objective!]!
+  outcomeConstraints: String
   updatedAt: DateTime!
-  valueType: EnumParameterSpaceValueType
 }
 
-input ParameterSpaceCreateInput {
-  bounds: JSON
-  experiments: ExperimentCreateNestedManyWithoutParameterSpacesInput
-  name: String
-  parameterType: EnumParameterSpaceParameterType!
-  valueType: EnumParameterSpaceValueType
+input OptimizationConfigCreateInput {
+  experiments: ExperimentCreateNestedManyWithoutOptimizationConfigsInput
+  objectives: ObjectiveCreateNestedManyWithoutOptimizationConfigsInput
+  outcomeConstraints: String
 }
 
-input ParameterSpaceCreateNestedManyWithoutExperimentsInput {
-  connect: [ParameterSpaceWhereUniqueInput!]
-}
-
-input ParameterSpaceListRelationFilter {
-  every: ParameterSpaceWhereInput
-  none: ParameterSpaceWhereInput
-  some: ParameterSpaceWhereInput
-}
-
-input ParameterSpaceOrderByInput {
-  bounds: SortOrder
+input OptimizationConfigOrderByInput {
   createdAt: SortOrder
   id: SortOrder
-  name: SortOrder
-  parameterType: SortOrder
+  outcomeConstraints: SortOrder
   updatedAt: SortOrder
-  valueType: SortOrder
 }
 
-input ParameterSpaceUpdateInput {
-  bounds: JSON
-  experiments: ExperimentUpdateManyWithoutParameterSpacesInput
-  name: String
-  parameterType: EnumParameterSpaceParameterType
-  valueType: EnumParameterSpaceValueType
+input OptimizationConfigUpdateInput {
+  experiments: ExperimentUpdateManyWithoutOptimizationConfigsInput
+  objectives: ObjectiveUpdateManyWithoutOptimizationConfigsInput
+  outcomeConstraints: String
 }
 
-input ParameterSpaceUpdateManyWithoutExperimentsInput {
-  connect: [ParameterSpaceWhereUniqueInput!]
-  disconnect: [ParameterSpaceWhereUniqueInput!]
-  set: [ParameterSpaceWhereUniqueInput!]
-}
-
-input ParameterSpaceWhereInput {
-  bounds: JsonFilter
+input OptimizationConfigWhereInput {
   experiments: ExperimentListRelationFilter
   id: StringFilter
-  name: StringNullableFilter
-  parameterType: EnumParameterSpaceParameterType
-  valueType: EnumParameterSpaceValueType
+  objectives: ObjectiveListRelationFilter
+  outcomeConstraints: StringNullableFilter
 }
 
-input ParameterSpaceWhereUniqueInput {
+input OptimizationConfigWhereUniqueInput {
+  id: String!
+}
+
+type Parameter {
+  createdAt: DateTime!
+  id: String!
+  parameterBody: String
+  parameterClass: String
+  parameterName: String
+  searchSpace: SearchSpace
+  updatedAt: DateTime!
+}
+
+type ParameterConstraint {
+  createdAt: DateTime!
+  id: String!
+  searchSpace: SearchSpace
+  updatedAt: DateTime!
+}
+
+input ParameterConstraintCreateInput {
+  searchSpace: SearchSpaceWhereUniqueInput
+}
+
+input ParameterConstraintCreateNestedManyWithoutSearchSpacesInput {
+  connect: [ParameterConstraintWhereUniqueInput!]
+}
+
+input ParameterConstraintListRelationFilter {
+  every: ParameterConstraintWhereInput
+  none: ParameterConstraintWhereInput
+  some: ParameterConstraintWhereInput
+}
+
+input ParameterConstraintOrderByInput {
+  createdAt: SortOrder
+  id: SortOrder
+  searchSpaceId: SortOrder
+  updatedAt: SortOrder
+}
+
+input ParameterConstraintUpdateInput {
+  searchSpace: SearchSpaceWhereUniqueInput
+}
+
+input ParameterConstraintUpdateManyWithoutSearchSpacesInput {
+  connect: [ParameterConstraintWhereUniqueInput!]
+  disconnect: [ParameterConstraintWhereUniqueInput!]
+  set: [ParameterConstraintWhereUniqueInput!]
+}
+
+input ParameterConstraintWhereInput {
+  id: StringFilter
+  searchSpace: SearchSpaceWhereUniqueInput
+}
+
+input ParameterConstraintWhereUniqueInput {
+  id: String!
+}
+
+input ParameterCreateInput {
+  parameterBody: String
+  parameterClass: String
+  parameterName: String
+  searchSpace: SearchSpaceWhereUniqueInput
+}
+
+input ParameterCreateNestedManyWithoutSearchSpacesInput {
+  connect: [ParameterWhereUniqueInput!]
+}
+
+input ParameterListRelationFilter {
+  every: ParameterWhereInput
+  none: ParameterWhereInput
+  some: ParameterWhereInput
+}
+
+input ParameterOrderByInput {
+  createdAt: SortOrder
+  id: SortOrder
+  parameterBody: SortOrder
+  parameterClass: SortOrder
+  parameterName: SortOrder
+  searchSpaceId: SortOrder
+  updatedAt: SortOrder
+}
+
+input ParameterUpdateInput {
+  parameterBody: String
+  parameterClass: String
+  parameterName: String
+  searchSpace: SearchSpaceWhereUniqueInput
+}
+
+input ParameterUpdateManyWithoutSearchSpacesInput {
+  connect: [ParameterWhereUniqueInput!]
+  disconnect: [ParameterWhereUniqueInput!]
+  set: [ParameterWhereUniqueInput!]
+}
+
+input ParameterWhereInput {
+  id: StringFilter
+  parameterBody: StringNullableFilter
+  parameterClass: StringNullableFilter
+  parameterName: StringNullableFilter
+  searchSpace: SearchSpaceWhereUniqueInput
+}
+
+input ParameterWhereUniqueInput {
   id: String!
 }
 
 type Query {
   _experimentsMeta(where: ExperimentWhereInput): MetaQueryPayload!
-  _parameterSpacesMeta(where: ParameterSpaceWhereInput): MetaQueryPayload!
+  _objectivesMeta(where: ObjectiveWhereInput): MetaQueryPayload!
+  _optimizationConfigsMeta(where: OptimizationConfigWhereInput): MetaQueryPayload!
+  _parameterConstraintsMeta(where: ParameterConstraintWhereInput): MetaQueryPayload!
+  _parametersMeta(where: ParameterWhereInput): MetaQueryPayload!
+  _searchSpacesMeta(where: SearchSpaceWhereInput): MetaQueryPayload!
   _usersMeta(where: UserWhereInput): MetaQueryPayload!
   experiment(where: ExperimentWhereUniqueInput!): Experiment
   experiments(orderBy: [ExperimentOrderByInput!], skip: Float, take: Float, where: ExperimentWhereInput): [Experiment!]!
-  parameterSpace(where: ParameterSpaceWhereUniqueInput!): ParameterSpace
-  parameterSpaces(orderBy: [ParameterSpaceOrderByInput!], skip: Float, take: Float, where: ParameterSpaceWhereInput): [ParameterSpace!]!
+  objective(where: ObjectiveWhereUniqueInput!): Objective
+  objectives(orderBy: [ObjectiveOrderByInput!], skip: Float, take: Float, where: ObjectiveWhereInput): [Objective!]!
+  optimizationConfig(where: OptimizationConfigWhereUniqueInput!): OptimizationConfig
+  optimizationConfigs(orderBy: [OptimizationConfigOrderByInput!], skip: Float, take: Float, where: OptimizationConfigWhereInput): [OptimizationConfig!]!
+  parameter(where: ParameterWhereUniqueInput!): Parameter
+  parameterConstraint(where: ParameterConstraintWhereUniqueInput!): ParameterConstraint
+  parameterConstraints(orderBy: [ParameterConstraintOrderByInput!], skip: Float, take: Float, where: ParameterConstraintWhereInput): [ParameterConstraint!]!
+  parameters(orderBy: [ParameterOrderByInput!], skip: Float, take: Float, where: ParameterWhereInput): [Parameter!]!
+  searchSpace(where: SearchSpaceWhereUniqueInput!): SearchSpace
+  searchSpaces(orderBy: [SearchSpaceOrderByInput!], skip: Float, take: Float, where: SearchSpaceWhereInput): [SearchSpace!]!
   user(where: UserWhereUniqueInput!): User
   userInfo: UserInfo!
   users(orderBy: [UserOrderByInput!], skip: Float, take: Float, where: UserWhereInput): [User!]!
@@ -203,6 +364,44 @@ type Query {
 enum QueryMode {
   Default
   Insensitive
+}
+
+type SearchSpace {
+  createdAt: DateTime!
+  experiments(orderBy: [ExperimentOrderByInput!], skip: Float, take: Float, where: ExperimentWhereInput): [Experiment!]!
+  id: String!
+  parameterConstraints(orderBy: [ParameterConstraintOrderByInput!], skip: Float, take: Float, where: ParameterConstraintWhereInput): [ParameterConstraint!]!
+  parameters(orderBy: [ParameterOrderByInput!], skip: Float, take: Float, where: ParameterWhereInput): [Parameter!]!
+  updatedAt: DateTime!
+}
+
+input SearchSpaceCreateInput {
+  experiments: ExperimentCreateNestedManyWithoutSearchSpacesInput
+  parameterConstraints: ParameterConstraintCreateNestedManyWithoutSearchSpacesInput
+  parameters: ParameterCreateNestedManyWithoutSearchSpacesInput
+}
+
+input SearchSpaceOrderByInput {
+  createdAt: SortOrder
+  id: SortOrder
+  updatedAt: SortOrder
+}
+
+input SearchSpaceUpdateInput {
+  experiments: ExperimentUpdateManyWithoutSearchSpacesInput
+  parameterConstraints: ParameterConstraintUpdateManyWithoutSearchSpacesInput
+  parameters: ParameterUpdateManyWithoutSearchSpacesInput
+}
+
+input SearchSpaceWhereInput {
+  experiments: ExperimentListRelationFilter
+  id: StringFilter
+  parameterConstraints: ParameterConstraintListRelationFilter
+  parameters: ParameterListRelationFilter
+}
+
+input SearchSpaceWhereUniqueInput {
+  id: String!
 }
 
 enum SortOrder {
