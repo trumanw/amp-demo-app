@@ -13,9 +13,10 @@ import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
 import { EnumExperimentGoal } from "./EnumExperimentGoal";
 import { IsEnum, IsOptional, IsString, ValidateNested } from "class-validator";
-import { UserWhereUniqueInput } from "../../user/base/UserWhereUniqueInput";
+import { OptimizationConfigWhereUniqueInput } from "../../optimizationConfig/base/OptimizationConfigWhereUniqueInput";
 import { Type } from "class-transformer";
-import { ParameterSpaceUpdateManyWithoutExperimentsInput } from "./ParameterSpaceUpdateManyWithoutExperimentsInput";
+import { UserWhereUniqueInput } from "../../user/base/UserWhereUniqueInput";
+import { SearchSpaceWhereUniqueInput } from "../../searchSpace/base/SearchSpaceWhereUniqueInput";
 
 @InputType()
 class ExperimentUpdateInput {
@@ -43,6 +44,18 @@ class ExperimentUpdateInput {
 
   @ApiProperty({
     required: false,
+    type: () => OptimizationConfigWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => OptimizationConfigWhereUniqueInput)
+  @IsOptional()
+  @Field(() => OptimizationConfigWhereUniqueInput, {
+    nullable: true,
+  })
+  optimizationConfig?: OptimizationConfigWhereUniqueInput | null;
+
+  @ApiProperty({
+    required: false,
     type: () => UserWhereUniqueInput,
   })
   @ValidateNested()
@@ -55,15 +68,15 @@ class ExperimentUpdateInput {
 
   @ApiProperty({
     required: false,
-    type: () => ParameterSpaceUpdateManyWithoutExperimentsInput,
+    type: () => SearchSpaceWhereUniqueInput,
   })
   @ValidateNested()
-  @Type(() => ParameterSpaceUpdateManyWithoutExperimentsInput)
+  @Type(() => SearchSpaceWhereUniqueInput)
   @IsOptional()
-  @Field(() => ParameterSpaceUpdateManyWithoutExperimentsInput, {
+  @Field(() => SearchSpaceWhereUniqueInput, {
     nullable: true,
   })
-  parameterSpace?: ParameterSpaceUpdateManyWithoutExperimentsInput;
+  searchSpace?: SearchSpaceWhereUniqueInput | null;
 }
 
 export { ExperimentUpdateInput as ExperimentUpdateInput };

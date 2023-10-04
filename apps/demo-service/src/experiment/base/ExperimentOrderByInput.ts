@@ -73,7 +73,29 @@ class ExperimentOrderByInput {
   @Field(() => SortOrder, {
     nullable: true,
   })
+  optimizationConfigId?: SortOrder;
+
+  @ApiProperty({
+    required: false,
+    enum: ["asc", "desc"],
+  })
+  @IsOptional()
+  @IsEnum(SortOrder)
+  @Field(() => SortOrder, {
+    nullable: true,
+  })
   User?: SortOrder;
+
+  @ApiProperty({
+    required: false,
+    enum: ["asc", "desc"],
+  })
+  @IsOptional()
+  @IsEnum(SortOrder)
+  @Field(() => SortOrder, {
+    nullable: true,
+  })
+  searchSpaceId?: SortOrder;
 
   @ApiProperty({
     required: false,

@@ -13,9 +13,10 @@ import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
 import { EnumExperimentGoal } from "./EnumExperimentGoal";
 import { IsEnum, IsString, ValidateNested, IsOptional } from "class-validator";
-import { UserWhereUniqueInput } from "../../user/base/UserWhereUniqueInput";
+import { OptimizationConfigWhereUniqueInput } from "../../optimizationConfig/base/OptimizationConfigWhereUniqueInput";
 import { Type } from "class-transformer";
-import { ParameterSpaceCreateNestedManyWithoutExperimentsInput } from "./ParameterSpaceCreateNestedManyWithoutExperimentsInput";
+import { UserWhereUniqueInput } from "../../user/base/UserWhereUniqueInput";
+import { SearchSpaceWhereUniqueInput } from "../../searchSpace/base/SearchSpaceWhereUniqueInput";
 
 @InputType()
 class ExperimentCreateInput {
@@ -36,6 +37,18 @@ class ExperimentCreateInput {
   name!: string;
 
   @ApiProperty({
+    required: false,
+    type: () => OptimizationConfigWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => OptimizationConfigWhereUniqueInput)
+  @IsOptional()
+  @Field(() => OptimizationConfigWhereUniqueInput, {
+    nullable: true,
+  })
+  optimizationConfig?: OptimizationConfigWhereUniqueInput | null;
+
+  @ApiProperty({
     required: true,
     type: () => UserWhereUniqueInput,
   })
@@ -46,15 +59,15 @@ class ExperimentCreateInput {
 
   @ApiProperty({
     required: false,
-    type: () => ParameterSpaceCreateNestedManyWithoutExperimentsInput,
+    type: () => SearchSpaceWhereUniqueInput,
   })
   @ValidateNested()
-  @Type(() => ParameterSpaceCreateNestedManyWithoutExperimentsInput)
+  @Type(() => SearchSpaceWhereUniqueInput)
   @IsOptional()
-  @Field(() => ParameterSpaceCreateNestedManyWithoutExperimentsInput, {
+  @Field(() => SearchSpaceWhereUniqueInput, {
     nullable: true,
   })
-  parameterSpace?: ParameterSpaceCreateNestedManyWithoutExperimentsInput;
+  searchSpace?: SearchSpaceWhereUniqueInput | null;
 }
 
 export { ExperimentCreateInput as ExperimentCreateInput };

@@ -6,6 +6,8 @@ export type ExperimentOrderByInput = {
   goal?: SortOrder;
   id?: SortOrder;
   name?: SortOrder;
+  optimizationConfigId?: SortOrder;
   User?: SortOrder;
+  searchSpaceId?: SortOrder;
   updatedAt?: SortOrder;
 };

@@ -15,7 +15,8 @@ import { EnumExperimentGoal } from "./EnumExperimentGoal";
 import { IsEnum, IsOptional, ValidateNested } from "class-validator";
 import { StringFilter } from "../../util/StringFilter";
 import { Type } from "class-transformer";
-import { ParameterSpaceListRelationFilter } from "../../parameterSpace/base/ParameterSpaceListRelationFilter";
+import { OptimizationConfigWhereUniqueInput } from "../../optimizationConfig/base/OptimizationConfigWhereUniqueInput";
+import { SearchSpaceWhereUniqueInput } from "../../searchSpace/base/SearchSpaceWhereUniqueInput";
 
 @InputType()
 class ExperimentWhereInput {
@@ -54,15 +55,27 @@ class ExperimentWhereInput {
 
   @ApiProperty({
     required: false,
-    type: () => ParameterSpaceListRelationFilter,
+    type: () => OptimizationConfigWhereUniqueInput,
   })
   @ValidateNested()
-  @Type(() => ParameterSpaceListRelationFilter)
+  @Type(() => OptimizationConfigWhereUniqueInput)
   @IsOptional()
-  @Field(() => ParameterSpaceListRelationFilter, {
+  @Field(() => OptimizationConfigWhereUniqueInput, {
     nullable: true,
   })
-  parameterSpace?: ParameterSpaceListRelationFilter;
+  optimizationConfig?: OptimizationConfigWhereUniqueInput;
+
+  @ApiProperty({
+    required: false,
+    type: () => SearchSpaceWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => SearchSpaceWhereUniqueInput)
+  @IsOptional()
+  @Field(() => SearchSpaceWhereUniqueInput, {
+    nullable: true,
+  })
+  searchSpace?: SearchSpaceWhereUniqueInput;
 }
 
 export { ExperimentWhereInput as ExperimentWhereInput };

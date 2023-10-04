@@ -13,10 +13,26 @@ import { ExperimentList } from "./experiment/ExperimentList";
 import { ExperimentCreate } from "./experiment/ExperimentCreate";
 import { ExperimentEdit } from "./experiment/ExperimentEdit";
 import { ExperimentShow } from "./experiment/ExperimentShow";
-import { ParameterSpaceList } from "./parameterSpace/ParameterSpaceList";
-import { ParameterSpaceCreate } from "./parameterSpace/ParameterSpaceCreate";
-import { ParameterSpaceEdit } from "./parameterSpace/ParameterSpaceEdit";
-import { ParameterSpaceShow } from "./parameterSpace/ParameterSpaceShow";
+import { SearchSpaceList } from "./searchSpace/SearchSpaceList";
+import { SearchSpaceCreate } from "./searchSpace/SearchSpaceCreate";
+import { SearchSpaceEdit } from "./searchSpace/SearchSpaceEdit";
+import { SearchSpaceShow } from "./searchSpace/SearchSpaceShow";
+import { ParameterList } from "./parameter/ParameterList";
+import { ParameterCreate } from "./parameter/ParameterCreate";
+import { ParameterEdit } from "./parameter/ParameterEdit";
+import { ParameterShow } from "./parameter/ParameterShow";
+import { ParameterConstraintList } from "./parameterConstraint/ParameterConstraintList";
+import { ParameterConstraintCreate } from "./parameterConstraint/ParameterConstraintCreate";
+import { ParameterConstraintEdit } from "./parameterConstraint/ParameterConstraintEdit";
+import { ParameterConstraintShow } from "./parameterConstraint/ParameterConstraintShow";
+import { OptimizationConfigList } from "./optimizationConfig/OptimizationConfigList";
+import { OptimizationConfigCreate } from "./optimizationConfig/OptimizationConfigCreate";
+import { OptimizationConfigEdit } from "./optimizationConfig/OptimizationConfigEdit";
+import { OptimizationConfigShow } from "./optimizationConfig/OptimizationConfigShow";
+import { ObjectiveList } from "./objective/ObjectiveList";
+import { ObjectiveCreate } from "./objective/ObjectiveCreate";
+import { ObjectiveEdit } from "./objective/ObjectiveEdit";
+import { ObjectiveShow } from "./objective/ObjectiveShow";
 import { jwtAuthProvider } from "./auth-provider/ra-auth-jwt";
 
 const App = (): React.ReactElement => {
@@ -58,11 +74,39 @@ const App = (): React.ReactElement => {
           show={ExperimentShow}
         />
         <Resource
-          name="ParameterSpace"
-          list={ParameterSpaceList}
-          edit={ParameterSpaceEdit}
-          create={ParameterSpaceCreate}
-          show={ParameterSpaceShow}
+          name="SearchSpace"
+          list={SearchSpaceList}
+          edit={SearchSpaceEdit}
+          create={SearchSpaceCreate}
+          show={SearchSpaceShow}
+        />
+        <Resource
+          name="Parameter"
+          list={ParameterList}
+          edit={ParameterEdit}
+          create={ParameterCreate}
+          show={ParameterShow}
+        />
+        <Resource
+          name="ParameterConstraint"
+          list={ParameterConstraintList}
+          edit={ParameterConstraintEdit}
+          create={ParameterConstraintCreate}
+          show={ParameterConstraintShow}
+        />
+        <Resource
+          name="OptimizationConfig"
+          list={OptimizationConfigList}
+          edit={OptimizationConfigEdit}
+          create={OptimizationConfigCreate}
+          show={OptimizationConfigShow}
+        />
+        <Resource
+          name="Objective"
+          list={ObjectiveList}
+          edit={ObjectiveEdit}
+          create={ObjectiveCreate}
+          show={ObjectiveShow}
         />
       </Admin>
     </div>
