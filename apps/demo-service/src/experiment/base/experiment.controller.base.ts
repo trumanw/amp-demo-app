@@ -27,6 +27,9 @@ import { ExperimentWhereUniqueInput } from "./ExperimentWhereUniqueInput";
 import { ExperimentFindManyArgs } from "./ExperimentFindManyArgs";
 import { ExperimentUpdateInput } from "./ExperimentUpdateInput";
 import { Experiment } from "./Experiment";
+import { TrialFindManyArgs } from "../../trial/base/TrialFindManyArgs";
+import { Trial } from "../../trial/base/Trial";
+import { TrialWhereUniqueInput } from "../../trial/base/TrialWhereUniqueInput";
 
 @swagger.ApiBearerAuth()
 @common.UseGuards(defaultAuthGuard.DefaultAuthGuard, nestAccessControl.ACGuard)
@@ -322,5 +325,110 @@ export class ExperimentControllerBase {
       }
       throw error;
     }
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @common.Get("/:id/trials")
+  @ApiNestedQuery(TrialFindManyArgs)
+  @nestAccessControl.UseRoles({
+    resource: "Trial",
+    action: "read",
+    possession: "any",
+  })
+  async findManyTrials(
+    @common.Req() request: Request,
+    @common.Param() params: ExperimentWhereUniqueInput
+  ): Promise<Trial[]> {
+    const query = plainToClass(TrialFindManyArgs, request.query);
+    const results = await this.service.findTrials(params.id, {
+      ...query,
+      select: {
+        createdAt: true,
+
+        experiment: {
+          select: {
+            id: true,
+          },
+        },
+
+        id: true,
+        trialBody: true,
+        trialIndex: true,
+        trialType: true,
+        updatedAt: true,
+      },
+    });
+    if (results === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return results;
+  }
+
+  @common.Post("/:id/trials")
+  @nestAccessControl.UseRoles({
+    resource: "Experiment",
+    action: "update",
+    possession: "any",
+  })
+  async connectTrials(
+    @common.Param() params: ExperimentWhereUniqueInput,
+    @common.Body() body: TrialWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      trials: {
+        connect: body,
+      },
+    };
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Patch("/:id/trials")
+  @nestAccessControl.UseRoles({
+    resource: "Experiment",
+    action: "update",
+    possession: "any",
+  })
+  async updateTrials(
+    @common.Param() params: ExperimentWhereUniqueInput,
+    @common.Body() body: TrialWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      trials: {
+        set: body,
+      },
+    };
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Delete("/:id/trials")
+  @nestAccessControl.UseRoles({
+    resource: "Experiment",
+    action: "update",
+    possession: "any",
+  })
+  async disconnectTrials(
+    @common.Param() params: ExperimentWhereUniqueInput,
+    @common.Body() body: TrialWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      trials: {
+        disconnect: body,
+      },
+    };
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
   }
 }

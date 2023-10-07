@@ -10,13 +10,7 @@ https://docs.amplication.com/how-to/custom-code
 ------------------------------------------------------------------------------
   */
 import { PrismaService } from "../../prisma/prisma.service";
-import {
-  Prisma,
-  SearchSpace,
-  Experiment,
-  ParameterConstraint,
-  Parameter,
-} from "@prisma/client";
+import { Prisma, SearchSpace, Experiment, Parameter } from "@prisma/client";
 
 export class SearchSpaceServiceBase {
   constructor(protected readonly prisma: PrismaService) {}
@@ -62,17 +56,6 @@ export class SearchSpaceServiceBase {
         where: { id: parentId },
       })
       .experiments(args);
-  }
-
-  async findParameterConstraints(
-    parentId: string,
-    args: Prisma.ParameterConstraintFindManyArgs
-  ): Promise<ParameterConstraint[]> {
-    return this.prisma.searchSpace
-      .findUniqueOrThrow({
-        where: { id: parentId },
-      })
-      .parameterConstraints(args);
   }
 
   async findParameters(

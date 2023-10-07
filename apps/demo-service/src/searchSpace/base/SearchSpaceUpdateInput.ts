@@ -14,7 +14,6 @@ import { ApiProperty } from "@nestjs/swagger";
 import { ExperimentUpdateManyWithoutSearchSpacesInput } from "./ExperimentUpdateManyWithoutSearchSpacesInput";
 import { ValidateNested, IsOptional } from "class-validator";
 import { Type } from "class-transformer";
-import { ParameterConstraintUpdateManyWithoutSearchSpacesInput } from "./ParameterConstraintUpdateManyWithoutSearchSpacesInput";
 import { ParameterUpdateManyWithoutSearchSpacesInput } from "./ParameterUpdateManyWithoutSearchSpacesInput";
 
 @InputType()
@@ -30,18 +29,6 @@ class SearchSpaceUpdateInput {
     nullable: true,
   })
   experiments?: ExperimentUpdateManyWithoutSearchSpacesInput;
-
-  @ApiProperty({
-    required: false,
-    type: () => ParameterConstraintUpdateManyWithoutSearchSpacesInput,
-  })
-  @ValidateNested()
-  @Type(() => ParameterConstraintUpdateManyWithoutSearchSpacesInput)
-  @IsOptional()
-  @Field(() => ParameterConstraintUpdateManyWithoutSearchSpacesInput, {
-    nullable: true,
-  })
-  parameterConstraints?: ParameterConstraintUpdateManyWithoutSearchSpacesInput;
 
   @ApiProperty({
     required: false,

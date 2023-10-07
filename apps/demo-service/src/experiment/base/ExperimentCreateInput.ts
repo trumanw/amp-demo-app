@@ -17,6 +17,7 @@ import { OptimizationConfigWhereUniqueInput } from "../../optimizationConfig/bas
 import { Type } from "class-transformer";
 import { UserWhereUniqueInput } from "../../user/base/UserWhereUniqueInput";
 import { SearchSpaceWhereUniqueInput } from "../../searchSpace/base/SearchSpaceWhereUniqueInput";
+import { TrialCreateNestedManyWithoutExperimentsInput } from "./TrialCreateNestedManyWithoutExperimentsInput";
 
 @InputType()
 class ExperimentCreateInput {
@@ -68,6 +69,18 @@ class ExperimentCreateInput {
     nullable: true,
   })
   searchSpace?: SearchSpaceWhereUniqueInput | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => TrialCreateNestedManyWithoutExperimentsInput,
+  })
+  @ValidateNested()
+  @Type(() => TrialCreateNestedManyWithoutExperimentsInput)
+  @IsOptional()
+  @Field(() => TrialCreateNestedManyWithoutExperimentsInput, {
+    nullable: true,
+  })
+  trials?: TrialCreateNestedManyWithoutExperimentsInput;
 }
 
 export { ExperimentCreateInput as ExperimentCreateInput };

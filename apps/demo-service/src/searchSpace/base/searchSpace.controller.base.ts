@@ -30,9 +30,6 @@ import { SearchSpace } from "./SearchSpace";
 import { ExperimentFindManyArgs } from "../../experiment/base/ExperimentFindManyArgs";
 import { Experiment } from "../../experiment/base/Experiment";
 import { ExperimentWhereUniqueInput } from "../../experiment/base/ExperimentWhereUniqueInput";
-import { ParameterConstraintFindManyArgs } from "../../parameterConstraint/base/ParameterConstraintFindManyArgs";
-import { ParameterConstraint } from "../../parameterConstraint/base/ParameterConstraint";
-import { ParameterConstraintWhereUniqueInput } from "../../parameterConstraint/base/ParameterConstraintWhereUniqueInput";
 import { ParameterFindManyArgs } from "../../parameter/base/ParameterFindManyArgs";
 import { Parameter } from "../../parameter/base/Parameter";
 import { ParameterWhereUniqueInput } from "../../parameter/base/ParameterWhereUniqueInput";
@@ -298,108 +295,6 @@ export class SearchSpaceControllerBase {
   ): Promise<void> {
     const data = {
       experiments: {
-        disconnect: body,
-      },
-    };
-    await this.service.update({
-      where: params,
-      data,
-      select: { id: true },
-    });
-  }
-
-  @common.UseInterceptors(AclFilterResponseInterceptor)
-  @common.Get("/:id/parameterConstraints")
-  @ApiNestedQuery(ParameterConstraintFindManyArgs)
-  @nestAccessControl.UseRoles({
-    resource: "ParameterConstraint",
-    action: "read",
-    possession: "any",
-  })
-  async findManyParameterConstraints(
-    @common.Req() request: Request,
-    @common.Param() params: SearchSpaceWhereUniqueInput
-  ): Promise<ParameterConstraint[]> {
-    const query = plainToClass(ParameterConstraintFindManyArgs, request.query);
-    const results = await this.service.findParameterConstraints(params.id, {
-      ...query,
-      select: {
-        createdAt: true,
-        id: true,
-
-        searchSpace: {
-          select: {
-            id: true,
-          },
-        },
-
-        updatedAt: true,
-      },
-    });
-    if (results === null) {
-      throw new errors.NotFoundException(
-        `No resource was found for ${JSON.stringify(params)}`
-      );
-    }
-    return results;
-  }
-
-  @common.Post("/:id/parameterConstraints")
-  @nestAccessControl.UseRoles({
-    resource: "SearchSpace",
-    action: "update",
-    possession: "any",
-  })
-  async connectParameterConstraints(
-    @common.Param() params: SearchSpaceWhereUniqueInput,
-    @common.Body() body: ParameterConstraintWhereUniqueInput[]
-  ): Promise<void> {
-    const data = {
-      parameterConstraints: {
-        connect: body,
-      },
-    };
-    await this.service.update({
-      where: params,
-      data,
-      select: { id: true },
-    });
-  }
-
-  @common.Patch("/:id/parameterConstraints")
-  @nestAccessControl.UseRoles({
-    resource: "SearchSpace",
-    action: "update",
-    possession: "any",
-  })
-  async updateParameterConstraints(
-    @common.Param() params: SearchSpaceWhereUniqueInput,
-    @common.Body() body: ParameterConstraintWhereUniqueInput[]
-  ): Promise<void> {
-    const data = {
-      parameterConstraints: {
-        set: body,
-      },
-    };
-    await this.service.update({
-      where: params,
-      data,
-      select: { id: true },
-    });
-  }
-
-  @common.Delete("/:id/parameterConstraints")
-  @nestAccessControl.UseRoles({
-    resource: "SearchSpace",
-    action: "update",
-    possession: "any",
-  })
-  async disconnectParameterConstraints(
-    @common.Param() params: SearchSpaceWhereUniqueInput,
-    @common.Body() body: ParameterConstraintWhereUniqueInput[]
-  ): Promise<void> {
-    const data = {
-      parameterConstraints: {
         disconnect: body,
       },
     };

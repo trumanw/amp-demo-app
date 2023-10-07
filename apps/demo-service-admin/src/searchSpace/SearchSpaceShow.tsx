@@ -53,24 +53,6 @@ export const SearchSpaceShow = (props: ShowProps): React.ReactElement => {
           </Datagrid>
         </ReferenceManyField>
         <ReferenceManyField
-          reference="ParameterConstraint"
-          target="searchSpaceId"
-          label="ParameterConstraints"
-        >
-          <Datagrid rowClick="show">
-            <DateField source="createdAt" label="Created At" />
-            <TextField label="ID" source="id" />
-            <ReferenceField
-              label="SearchSpace"
-              source="searchspace.id"
-              reference="SearchSpace"
-            >
-              <TextField source={SEARCHSPACE_TITLE_FIELD} />
-            </ReferenceField>
-            <DateField source="updatedAt" label="Updated At" />
-          </Datagrid>
-        </ReferenceManyField>
-        <ReferenceManyField
           reference="Parameter"
           target="searchSpaceId"
           label="Parameters"

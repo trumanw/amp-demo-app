@@ -17,6 +17,7 @@ import { OptimizationConfigWhereUniqueInput } from "../../optimizationConfig/bas
 import { Type } from "class-transformer";
 import { UserWhereUniqueInput } from "../../user/base/UserWhereUniqueInput";
 import { SearchSpaceWhereUniqueInput } from "../../searchSpace/base/SearchSpaceWhereUniqueInput";
+import { TrialUpdateManyWithoutExperimentsInput } from "./TrialUpdateManyWithoutExperimentsInput";
 
 @InputType()
 class ExperimentUpdateInput {
@@ -77,6 +78,18 @@ class ExperimentUpdateInput {
     nullable: true,
   })
   searchSpace?: SearchSpaceWhereUniqueInput | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => TrialUpdateManyWithoutExperimentsInput,
+  })
+  @ValidateNested()
+  @Type(() => TrialUpdateManyWithoutExperimentsInput)
+  @IsOptional()
+  @Field(() => TrialUpdateManyWithoutExperimentsInput, {
+    nullable: true,
+  })
+  trials?: TrialUpdateManyWithoutExperimentsInput;
 }
 
 export { ExperimentUpdateInput as ExperimentUpdateInput };

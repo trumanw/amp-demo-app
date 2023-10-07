@@ -26,6 +26,8 @@ import { ExperimentCountArgs } from "./ExperimentCountArgs";
 import { ExperimentFindManyArgs } from "./ExperimentFindManyArgs";
 import { ExperimentFindUniqueArgs } from "./ExperimentFindUniqueArgs";
 import { Experiment } from "./Experiment";
+import { TrialFindManyArgs } from "../../trial/base/TrialFindManyArgs";
+import { Trial } from "../../trial/base/Trial";
 import { OptimizationConfig } from "../../optimizationConfig/base/OptimizationConfig";
 import { User } from "../../user/base/User";
 import { SearchSpace } from "../../searchSpace/base/SearchSpace";
@@ -179,6 +181,26 @@ export class ExperimentResolverBase {
       }
       throw error;
     }
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => [Trial], { name: "trials" })
+  @nestAccessControl.UseRoles({
+    resource: "Trial",
+    action: "read",
+    possession: "any",
+  })
+  async resolveFieldTrials(
+    @graphql.Parent() parent: Experiment,
+    @graphql.Args() args: TrialFindManyArgs
+  ): Promise<Trial[]> {
+    const results = await this.service.findTrials(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
   }
 
   @common.UseInterceptors(AclFilterResponseInterceptor)
