@@ -16,6 +16,12 @@ enum EnumExperimentGoal {
   Moo
 }
 
+enum EnumTrialTrialType {
+  Autogen
+  Init
+  Valid
+}
+
 type Experiment {
   createdAt: DateTime!
   goal: EnumExperimentGoal
@@ -24,6 +30,7 @@ type Experiment {
   optimizationConfig: OptimizationConfig
   owner: User
   searchSpace: SearchSpace
+  trials(orderBy: [TrialOrderByInput!], skip: Float, take: Float, where: TrialWhereInput): [Trial!]!
   updatedAt: DateTime!
 }
 
@@ -33,6 +40,7 @@ input ExperimentCreateInput {
   optimizationConfig: OptimizationConfigWhereUniqueInput
   owner: UserWhereUniqueInput!
   searchSpace: SearchSpaceWhereUniqueInput
+  trials: TrialCreateNestedManyWithoutExperimentsInput
 }
 
 input ExperimentCreateNestedManyWithoutOptimizationConfigsInput {
@@ -66,6 +74,7 @@ input ExperimentUpdateInput {
   optimizationConfig: OptimizationConfigWhereUniqueInput
   owner: UserWhereUniqueInput
   searchSpace: SearchSpaceWhereUniqueInput
+  trials: TrialUpdateManyWithoutExperimentsInput
 }
 
 input ExperimentUpdateManyWithoutOptimizationConfigsInput {
@@ -86,16 +95,38 @@ input ExperimentWhereInput {
   name: StringFilter
   optimizationConfig: OptimizationConfigWhereUniqueInput
   searchSpace: SearchSpaceWhereUniqueInput
+  trials: TrialListRelationFilter
 }
 
 input ExperimentWhereUniqueInput {
   id: String!
 }
 
+input IntFilter {
+  equals: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  lt: Int
+  lte: Int
+  not: Int
+  notIn: [Int!]
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
 scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
+
+"""
+The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSONObject @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
+
+input JsonFilter {
+  equals: JSONObject
+  not: JSONObject
+}
 
 type MetaQueryPayload {
   count: Float!
@@ -106,23 +137,23 @@ type Mutation {
   createObjective(data: ObjectiveCreateInput!): Objective!
   createOptimizationConfig(data: OptimizationConfigCreateInput!): OptimizationConfig!
   createParameter(data: ParameterCreateInput!): Parameter!
-  createParameterConstraint(data: ParameterConstraintCreateInput!): ParameterConstraint!
   createSearchSpace(data: SearchSpaceCreateInput!): SearchSpace!
+  createTrial(data: TrialCreateInput!): Trial!
   createUser(data: UserCreateInput!): User!
   deleteExperiment(where: ExperimentWhereUniqueInput!): Experiment!
   deleteObjective(where: ObjectiveWhereUniqueInput!): Objective!
   deleteOptimizationConfig(where: OptimizationConfigWhereUniqueInput!): OptimizationConfig!
   deleteParameter(where: ParameterWhereUniqueInput!): Parameter!
-  deleteParameterConstraint(where: ParameterConstraintWhereUniqueInput!): ParameterConstraint!
   deleteSearchSpace(where: SearchSpaceWhereUniqueInput!): SearchSpace!
+  deleteTrial(where: TrialWhereUniqueInput!): Trial!
   deleteUser(where: UserWhereUniqueInput!): User!
   login(credentials: Credentials!): UserInfo!
   updateExperiment(data: ExperimentUpdateInput!, where: ExperimentWhereUniqueInput!): Experiment!
   updateObjective(data: ObjectiveUpdateInput!, where: ObjectiveWhereUniqueInput!): Objective!
   updateOptimizationConfig(data: OptimizationConfigUpdateInput!, where: OptimizationConfigWhereUniqueInput!): OptimizationConfig!
   updateParameter(data: ParameterUpdateInput!, where: ParameterWhereUniqueInput!): Parameter!
-  updateParameterConstraint(data: ParameterConstraintUpdateInput!, where: ParameterConstraintWhereUniqueInput!): ParameterConstraint!
   updateSearchSpace(data: SearchSpaceUpdateInput!, where: SearchSpaceWhereUniqueInput!): SearchSpace!
+  updateTrial(data: TrialUpdateInput!, where: TrialWhereUniqueInput!): Trial!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User!
 }
 
@@ -237,53 +268,6 @@ type Parameter {
   updatedAt: DateTime!
 }
 
-type ParameterConstraint {
-  createdAt: DateTime!
-  id: String!
-  searchSpace: SearchSpace
-  updatedAt: DateTime!
-}
-
-input ParameterConstraintCreateInput {
-  searchSpace: SearchSpaceWhereUniqueInput
-}
-
-input ParameterConstraintCreateNestedManyWithoutSearchSpacesInput {
-  connect: [ParameterConstraintWhereUniqueInput!]
-}
-
-input ParameterConstraintListRelationFilter {
-  every: ParameterConstraintWhereInput
-  none: ParameterConstraintWhereInput
-  some: ParameterConstraintWhereInput
-}
-
-input ParameterConstraintOrderByInput {
-  createdAt: SortOrder
-  id: SortOrder
-  searchSpaceId: SortOrder
-  updatedAt: SortOrder
-}
-
-input ParameterConstraintUpdateInput {
-  searchSpace: SearchSpaceWhereUniqueInput
-}
-
-input ParameterConstraintUpdateManyWithoutSearchSpacesInput {
-  connect: [ParameterConstraintWhereUniqueInput!]
-  disconnect: [ParameterConstraintWhereUniqueInput!]
-  set: [ParameterConstraintWhereUniqueInput!]
-}
-
-input ParameterConstraintWhereInput {
-  id: StringFilter
-  searchSpace: SearchSpaceWhereUniqueInput
-}
-
-input ParameterConstraintWhereUniqueInput {
-  id: String!
-}
-
 input ParameterCreateInput {
   parameterBody: String
   parameterClass: String
@@ -340,9 +324,9 @@ type Query {
   _experimentsMeta(where: ExperimentWhereInput): MetaQueryPayload!
   _objectivesMeta(where: ObjectiveWhereInput): MetaQueryPayload!
   _optimizationConfigsMeta(where: OptimizationConfigWhereInput): MetaQueryPayload!
-  _parameterConstraintsMeta(where: ParameterConstraintWhereInput): MetaQueryPayload!
   _parametersMeta(where: ParameterWhereInput): MetaQueryPayload!
   _searchSpacesMeta(where: SearchSpaceWhereInput): MetaQueryPayload!
+  _trialsMeta(where: TrialWhereInput): MetaQueryPayload!
   _usersMeta(where: UserWhereInput): MetaQueryPayload!
   experiment(where: ExperimentWhereUniqueInput!): Experiment
   experiments(orderBy: [ExperimentOrderByInput!], skip: Float, take: Float, where: ExperimentWhereInput): [Experiment!]!
@@ -351,11 +335,11 @@ type Query {
   optimizationConfig(where: OptimizationConfigWhereUniqueInput!): OptimizationConfig
   optimizationConfigs(orderBy: [OptimizationConfigOrderByInput!], skip: Float, take: Float, where: OptimizationConfigWhereInput): [OptimizationConfig!]!
   parameter(where: ParameterWhereUniqueInput!): Parameter
-  parameterConstraint(where: ParameterConstraintWhereUniqueInput!): ParameterConstraint
-  parameterConstraints(orderBy: [ParameterConstraintOrderByInput!], skip: Float, take: Float, where: ParameterConstraintWhereInput): [ParameterConstraint!]!
   parameters(orderBy: [ParameterOrderByInput!], skip: Float, take: Float, where: ParameterWhereInput): [Parameter!]!
   searchSpace(where: SearchSpaceWhereUniqueInput!): SearchSpace
   searchSpaces(orderBy: [SearchSpaceOrderByInput!], skip: Float, take: Float, where: SearchSpaceWhereInput): [SearchSpace!]!
+  trial(where: TrialWhereUniqueInput!): Trial
+  trials(orderBy: [TrialOrderByInput!], skip: Float, take: Float, where: TrialWhereInput): [Trial!]!
   user(where: UserWhereUniqueInput!): User
   userInfo: UserInfo!
   users(orderBy: [UserOrderByInput!], skip: Float, take: Float, where: UserWhereInput): [User!]!
@@ -370,14 +354,12 @@ type SearchSpace {
   createdAt: DateTime!
   experiments(orderBy: [ExperimentOrderByInput!], skip: Float, take: Float, where: ExperimentWhereInput): [Experiment!]!
   id: String!
-  parameterConstraints(orderBy: [ParameterConstraintOrderByInput!], skip: Float, take: Float, where: ParameterConstraintWhereInput): [ParameterConstraint!]!
   parameters(orderBy: [ParameterOrderByInput!], skip: Float, take: Float, where: ParameterWhereInput): [Parameter!]!
   updatedAt: DateTime!
 }
 
 input SearchSpaceCreateInput {
   experiments: ExperimentCreateNestedManyWithoutSearchSpacesInput
-  parameterConstraints: ParameterConstraintCreateNestedManyWithoutSearchSpacesInput
   parameters: ParameterCreateNestedManyWithoutSearchSpacesInput
 }
 
@@ -389,14 +371,12 @@ input SearchSpaceOrderByInput {
 
 input SearchSpaceUpdateInput {
   experiments: ExperimentUpdateManyWithoutSearchSpacesInput
-  parameterConstraints: ParameterConstraintUpdateManyWithoutSearchSpacesInput
   parameters: ParameterUpdateManyWithoutSearchSpacesInput
 }
 
 input SearchSpaceWhereInput {
   experiments: ExperimentListRelationFilter
   id: StringFilter
-  parameterConstraints: ParameterConstraintListRelationFilter
   parameters: ParameterListRelationFilter
 }
 
@@ -437,6 +417,68 @@ input StringNullableFilter {
   not: String
   notIn: [String!]
   startsWith: String
+}
+
+type Trial {
+  createdAt: DateTime!
+  experiment: Experiment
+  id: String!
+  trialBody: JSON
+  trialIndex: Float!
+  trialType: EnumTrialTrialType
+  updatedAt: DateTime!
+}
+
+input TrialCreateInput {
+  experiment: ExperimentWhereUniqueInput
+  trialBody: JSON
+  trialIndex: Float!
+  trialType: EnumTrialTrialType
+}
+
+input TrialCreateNestedManyWithoutExperimentsInput {
+  connect: [TrialWhereUniqueInput!]
+}
+
+input TrialListRelationFilter {
+  every: TrialWhereInput
+  none: TrialWhereInput
+  some: TrialWhereInput
+}
+
+input TrialOrderByInput {
+  createdAt: SortOrder
+  experimentId: SortOrder
+  id: SortOrder
+  trialBody: SortOrder
+  trialIndex: SortOrder
+  trialType: SortOrder
+  updatedAt: SortOrder
+}
+
+input TrialUpdateInput {
+  experiment: ExperimentWhereUniqueInput
+  trialBody: JSON
+  trialIndex: Float
+  trialType: EnumTrialTrialType
+}
+
+input TrialUpdateManyWithoutExperimentsInput {
+  connect: [TrialWhereUniqueInput!]
+  disconnect: [TrialWhereUniqueInput!]
+  set: [TrialWhereUniqueInput!]
+}
+
+input TrialWhereInput {
+  experiment: ExperimentWhereUniqueInput
+  id: StringFilter
+  trialBody: JsonFilter
+  trialIndex: IntFilter
+  trialType: EnumTrialTrialType
+}
+
+input TrialWhereUniqueInput {
+  id: String!
 }
 
 type User {
