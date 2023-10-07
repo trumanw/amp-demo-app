@@ -17,6 +17,7 @@ import { StringFilter } from "../../util/StringFilter";
 import { Type } from "class-transformer";
 import { OptimizationConfigWhereUniqueInput } from "../../optimizationConfig/base/OptimizationConfigWhereUniqueInput";
 import { SearchSpaceWhereUniqueInput } from "../../searchSpace/base/SearchSpaceWhereUniqueInput";
+import { TrialListRelationFilter } from "../../trial/base/TrialListRelationFilter";
 
 @InputType()
 class ExperimentWhereInput {
@@ -76,6 +77,18 @@ class ExperimentWhereInput {
     nullable: true,
   })
   searchSpace?: SearchSpaceWhereUniqueInput;
+
+  @ApiProperty({
+    required: false,
+    type: () => TrialListRelationFilter,
+  })
+  @ValidateNested()
+  @Type(() => TrialListRelationFilter)
+  @IsOptional()
+  @Field(() => TrialListRelationFilter, {
+    nullable: true,
+  })
+  trials?: TrialListRelationFilter;
 }
 
 export { ExperimentWhereInput as ExperimentWhereInput };

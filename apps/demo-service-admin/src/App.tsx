@@ -21,10 +21,6 @@ import { ParameterList } from "./parameter/ParameterList";
 import { ParameterCreate } from "./parameter/ParameterCreate";
 import { ParameterEdit } from "./parameter/ParameterEdit";
 import { ParameterShow } from "./parameter/ParameterShow";
-import { ParameterConstraintList } from "./parameterConstraint/ParameterConstraintList";
-import { ParameterConstraintCreate } from "./parameterConstraint/ParameterConstraintCreate";
-import { ParameterConstraintEdit } from "./parameterConstraint/ParameterConstraintEdit";
-import { ParameterConstraintShow } from "./parameterConstraint/ParameterConstraintShow";
 import { OptimizationConfigList } from "./optimizationConfig/OptimizationConfigList";
 import { OptimizationConfigCreate } from "./optimizationConfig/OptimizationConfigCreate";
 import { OptimizationConfigEdit } from "./optimizationConfig/OptimizationConfigEdit";
@@ -33,6 +29,10 @@ import { ObjectiveList } from "./objective/ObjectiveList";
 import { ObjectiveCreate } from "./objective/ObjectiveCreate";
 import { ObjectiveEdit } from "./objective/ObjectiveEdit";
 import { ObjectiveShow } from "./objective/ObjectiveShow";
+import { TrialList } from "./trial/TrialList";
+import { TrialCreate } from "./trial/TrialCreate";
+import { TrialEdit } from "./trial/TrialEdit";
+import { TrialShow } from "./trial/TrialShow";
 import { jwtAuthProvider } from "./auth-provider/ra-auth-jwt";
 
 const App = (): React.ReactElement => {
@@ -88,13 +88,6 @@ const App = (): React.ReactElement => {
           show={ParameterShow}
         />
         <Resource
-          name="ParameterConstraint"
-          list={ParameterConstraintList}
-          edit={ParameterConstraintEdit}
-          create={ParameterConstraintCreate}
-          show={ParameterConstraintShow}
-        />
-        <Resource
           name="OptimizationConfig"
           list={OptimizationConfigList}
           edit={OptimizationConfigEdit}
@@ -107,6 +100,13 @@ const App = (): React.ReactElement => {
           edit={ObjectiveEdit}
           create={ObjectiveCreate}
           show={ObjectiveShow}
+        />
+        <Resource
+          name="Trial"
+          list={TrialList}
+          edit={TrialEdit}
+          create={TrialCreate}
+          show={TrialShow}
         />
       </Admin>
     </div>

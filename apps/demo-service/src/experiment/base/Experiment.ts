@@ -23,6 +23,7 @@ import { EnumExperimentGoal } from "./EnumExperimentGoal";
 import { OptimizationConfig } from "../../optimizationConfig/base/OptimizationConfig";
 import { User } from "../../user/base/User";
 import { SearchSpace } from "../../searchSpace/base/SearchSpace";
+import { Trial } from "../../trial/base/Trial";
 
 @ObjectType()
 class Experiment {
@@ -85,6 +86,15 @@ class Experiment {
   @Type(() => SearchSpace)
   @IsOptional()
   searchSpace?: SearchSpace | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => [Trial],
+  })
+  @ValidateNested()
+  @Type(() => Trial)
+  @IsOptional()
+  trials?: Array<Trial>;
 
   @ApiProperty({
     required: true,

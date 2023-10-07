@@ -15,7 +15,6 @@ import { ExperimentListRelationFilter } from "../../experiment/base/ExperimentLi
 import { ValidateNested, IsOptional } from "class-validator";
 import { Type } from "class-transformer";
 import { StringFilter } from "../../util/StringFilter";
-import { ParameterConstraintListRelationFilter } from "../../parameterConstraint/base/ParameterConstraintListRelationFilter";
 import { ParameterListRelationFilter } from "../../parameter/base/ParameterListRelationFilter";
 
 @InputType()
@@ -42,18 +41,6 @@ class SearchSpaceWhereInput {
     nullable: true,
   })
   id?: StringFilter;
-
-  @ApiProperty({
-    required: false,
-    type: () => ParameterConstraintListRelationFilter,
-  })
-  @ValidateNested()
-  @Type(() => ParameterConstraintListRelationFilter)
-  @IsOptional()
-  @Field(() => ParameterConstraintListRelationFilter, {
-    nullable: true,
-  })
-  parameterConstraints?: ParameterConstraintListRelationFilter;
 
   @ApiProperty({
     required: false,

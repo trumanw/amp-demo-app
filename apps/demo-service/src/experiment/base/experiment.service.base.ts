@@ -13,6 +13,7 @@ import { PrismaService } from "../../prisma/prisma.service";
 import {
   Prisma,
   Experiment,
+  Trial,
   OptimizationConfig,
   User,
   SearchSpace,
@@ -51,6 +52,17 @@ export class ExperimentServiceBase {
     args: Prisma.SelectSubset<T, Prisma.ExperimentDeleteArgs>
   ): Promise<Experiment> {
     return this.prisma.experiment.delete(args);
+  }
+
+  async findTrials(
+    parentId: string,
+    args: Prisma.TrialFindManyArgs
+  ): Promise<Trial[]> {
+    return this.prisma.experiment
+      .findUniqueOrThrow({
+        where: { id: parentId },
+      })
+      .trials(args);
   }
 
   async getOptimizationConfig(

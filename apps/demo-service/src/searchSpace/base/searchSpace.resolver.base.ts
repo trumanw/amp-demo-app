@@ -28,8 +28,6 @@ import { SearchSpaceFindUniqueArgs } from "./SearchSpaceFindUniqueArgs";
 import { SearchSpace } from "./SearchSpace";
 import { ExperimentFindManyArgs } from "../../experiment/base/ExperimentFindManyArgs";
 import { Experiment } from "../../experiment/base/Experiment";
-import { ParameterConstraintFindManyArgs } from "../../parameterConstraint/base/ParameterConstraintFindManyArgs";
-import { ParameterConstraint } from "../../parameterConstraint/base/ParameterConstraint";
 import { ParameterFindManyArgs } from "../../parameter/base/ParameterFindManyArgs";
 import { Parameter } from "../../parameter/base/Parameter";
 import { SearchSpaceService } from "../searchSpace.service";
@@ -160,31 +158,6 @@ export class SearchSpaceResolverBase {
     @graphql.Args() args: ExperimentFindManyArgs
   ): Promise<Experiment[]> {
     const results = await this.service.findExperiments(parent.id, args);
-
-    if (!results) {
-      return [];
-    }
-
-    return results;
-  }
-
-  @common.UseInterceptors(AclFilterResponseInterceptor)
-  @graphql.ResolveField(() => [ParameterConstraint], {
-    name: "parameterConstraints",
-  })
-  @nestAccessControl.UseRoles({
-    resource: "ParameterConstraint",
-    action: "read",
-    possession: "any",
-  })
-  async resolveFieldParameterConstraints(
-    @graphql.Parent() parent: SearchSpace,
-    @graphql.Args() args: ParameterConstraintFindManyArgs
-  ): Promise<ParameterConstraint[]> {
-    const results = await this.service.findParameterConstraints(
-      parent.id,
-      args
-    );
 
     if (!results) {
       return [];

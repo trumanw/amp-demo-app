@@ -5,9 +5,9 @@ import { UserModule } from "./user/user.module";
 import { ExperimentModule } from "./experiment/experiment.module";
 import { SearchSpaceModule } from "./searchSpace/searchSpace.module";
 import { ParameterModule } from "./parameter/parameter.module";
-import { ParameterConstraintModule } from "./parameterConstraint/parameterConstraint.module";
 import { OptimizationConfigModule } from "./optimizationConfig/optimizationConfig.module";
 import { ObjectiveModule } from "./objective/objective.module";
+import { TrialModule } from "./trial/trial.module";
 import { HealthModule } from "./health/health.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { SecretsManagerModule } from "./providers/secrets/secretsManager.module";
@@ -28,9 +28,9 @@ import { AuthModule } from "./auth/auth.module";
     ExperimentModule,
     SearchSpaceModule,
     ParameterModule,
-    ParameterConstraintModule,
     OptimizationConfigModule,
     ObjectiveModule,
+    TrialModule,
     HealthModule,
     PrismaModule,
     SecretsManagerModule,

@@ -14,7 +14,6 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsDate, ValidateNested, IsOptional, IsString } from "class-validator";
 import { Type } from "class-transformer";
 import { Experiment } from "../../experiment/base/Experiment";
-import { ParameterConstraint } from "../../parameterConstraint/base/ParameterConstraint";
 import { Parameter } from "../../parameter/base/Parameter";
 
 @ObjectType()
@@ -43,15 +42,6 @@ class SearchSpace {
   @IsString()
   @Field(() => String)
   id!: string;
-
-  @ApiProperty({
-    required: false,
-    type: () => [ParameterConstraint],
-  })
-  @ValidateNested()
-  @Type(() => ParameterConstraint)
-  @IsOptional()
-  parameterConstraints?: Array<ParameterConstraint>;
 
   @ApiProperty({
     required: false,

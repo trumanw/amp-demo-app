@@ -30,16 +30,16 @@ model Experiment {
   User                 String              @unique
   searchSpace          SearchSpace?        @relation(fields: [searchSpaceId], references: [id])
   searchSpaceId        String?
+  trials               Trial[]
   updatedAt            DateTime            @updatedAt
 }
 
 model SearchSpace {
-  createdAt            DateTime              @default(now())
-  experiments          Experiment[]
-  id                   String                @id @default(cuid())
-  parameterConstraints ParameterConstraint[]
-  parameters           Parameter[]
-  updatedAt            DateTime              @updatedAt
+  createdAt   DateTime     @default(now())
+  experiments Experiment[]
+  id          String       @id @default(cuid())
+  parameters  Parameter[]
+  updatedAt   DateTime     @updatedAt
 }
 
 model Parameter {
@@ -51,14 +51,6 @@ model Parameter {
   searchSpace    SearchSpace? @relation(fields: [searchSpaceId], references: [id])
   searchSpaceId  String?
   updatedAt      DateTime     @updatedAt
-}
-
-model ParameterConstraint {
-  createdAt     DateTime     @default(now())
-  id            String       @id @default(cuid())
-  searchSpace   SearchSpace? @relation(fields: [searchSpaceId], references: [id])
-  searchSpaceId String?
-  updatedAt     DateTime     @updatedAt
 }
 
 model OptimizationConfig {
@@ -81,6 +73,23 @@ model Objective {
   updatedAt            DateTime            @updatedAt
 }
 
+model Trial {
+  createdAt    DateTime            @default(now())
+  experiment   Experiment?         @relation(fields: [experimentId], references: [id])
+  experimentId String?
+  id           String              @id @default(cuid())
+  trialBody    Json?
+  trialIndex   Int
+  trialType    EnumTrialTrialType?
+  updatedAt    DateTime            @updatedAt
+}
+
 enum EnumExperimentGoal {
   MOO
+}
+
+enum EnumTrialTrialType {
+  init
+  autogen
+  valid
 }
